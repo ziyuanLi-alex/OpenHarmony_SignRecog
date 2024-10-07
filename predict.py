@@ -21,7 +21,7 @@ class YOLOTracker:
 
     def process_frame(self, frame):
         # Run YOLO tracking on the frame
-        results = self.model.track(frame, persist=True)
+        results = self.model.track(frame, persist=True, verbose=False)
 
         # Visualize the results on the frame
         annotated_frame = results[0].plot()
@@ -32,7 +32,7 @@ class YOLOTracker:
             class_tensor = results[0].boxes.cls
             class_id = class_tensor[0].item()
             class_name = self.model.names[class_id]
-            print(f"Detected: {class_name}")
+            print(f"Detected: {class_name}", end='\r')
 
         return annotated_frame, class_name
 
@@ -42,7 +42,7 @@ class YOLOTracker:
                 # Read the test image
                 frame = cv2.imread("test.jpg")
                 if frame is None:
-                    print("Error: test.jpg not found.")
+                    print("Error: test.jpg not found.", end='\r')
                     return
 
                 # Process the frame
@@ -84,23 +84,27 @@ class YOLOTracker:
             cv2.destroyAllWindows()
 
     def post_class_name(self, class_name):
-        url = "http://your-server-endpoint"  # Replace with your server endpoint
+        url = "http://localhost:5000/recognize" 
         data = {"class_name": class_name}
         
         if self.test_post:
-            print(f"Pseudo-posting data: {data}")
+            print(f"Pseudo-posting data: {data}", end='\r')
         else:
             try:
                 response = requests.post(url, json=data)
                 if response.status_code == 200:
-                    print("Posted successfully")
+                    # print("Posted successfully", end='\r')
+                    pass
                 else:
-                    print(f"Failed to post: {response.status_code}")
+                    print(f"Failed to post: {response.status_code}", end='\r')
             except requests.exceptions.RequestException as e:
-                print(f"Error posting data: {e}")
+                print(f"Error posting data: {e}", end='\r')
+                
+    def broadcast_class_name(self, class_name):
+        socketio.emit('recognized_class', {'class_name': class_name}, broadcast=True)
 
 # Example usage
 if __name__ == "__main__":
     # test_mode = "--test" in sys.argv
-    tracker = YOLOTracker("runs/detect/train1/weights/best.pt", test_mode=True, test_post=True)
+    tracker = YOLOTracker("runs/detect/train1/weights/best.pt", test_mode=True)
     tracker.start_tracking()
