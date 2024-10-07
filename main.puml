@@ -2,6 +2,7 @@
 
 ' Set the diagram to top-to-bottom layout
 ' direction TB
+top to bottom direction
 
 ' Set default font to increase spacing between Chinese characters
 skinparam defaultFontName Arial
