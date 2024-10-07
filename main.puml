@@ -1,0 +1,68 @@
+@startuml openharmony_recog
+
+' Set the diagram to top-to-bottom layout
+' direction TB
+
+' Set default font to increase spacing between Chinese characters
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+
+
+' Allow mixing of actors and classes
+allowmixing
+
+class YOLOTracker #lightYellow {
+    - model: YOLO
+    - test_mode: bool
+    - video_source: int
+    - test_post: bool
+    
+    + __init__(model_path: str, video_source: int = 0, test_mode: bool = False)
+    + process_frame(frame: cv2.Mat): (annotated_frame: cv2.Mat, class_name: str)
+    + start_tracking()
+    + post_class_name(class_name: str)
+}
+
+class FlaskApp {
+    - app: Flask
+    - latest_class_name: str
+    
+    + recognize(class_name: str)
+    + get_recognized_class(): latest_class_name: str
+}
+
+class VideoSource {
+    + read_frame(): cv2.Mat
+    + is_opened(): bool
+    + release()
+}
+
+class YOLOModel {
+    + track(frame: cv2.Mat): YOLOResults
+}
+
+class YOLOResults {
+    + plot(): cv2.Mat
+    + get_class_name(): str
+}
+
+node User<<outer>> #LightSeaGreen
+User --> FlaskApp : "Sends GET requests"
+FlaskApp --> User : "Returns class name using POST json file"
+
+node Camera<<device>> #LightGreen
+Camera --> VideoSource : "Provides video stream"
+
+node Stream<<device>> #LightGreen
+Stream --> VideoSource : "Can take online video stream as input"
+
+
+
+
+YOLOTracker --> FlaskApp : "Uses HTTP POST"
+YOLOTracker --> YOLOModel : "Uses for detection"
+YOLOTracker --> VideoSource : "Reads frames from"
+YOLOModel --> YOLOResults : "Returns results"
+YOLOResults --> YOLOTracker : "Provides class name and plot"
+
+@enduml
