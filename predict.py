@@ -18,6 +18,11 @@ class YOLOTracker:
                 raise ValueError(f"Error: Unable to open video source {video_source}")
             # Set the capture properties to use MJPEG format
             self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+        
+        # Parameters for filtering
+        self.previous_class_name = None
+        self.stable_frame_count = 0
+        self.required_stable_frames = 5  # Number of frames the detection needs to be stable
 
     def process_frame(self, frame):
         # Run YOLO tracking on the frame
@@ -25,22 +30,38 @@ class YOLOTracker:
 
         # Visualize the results on the frame
         annotated_frame = results[0].plot()
-        class_name = None
+        current_class_name = None
 
         # If any object is detected, extract the class name
         if len(results[0].boxes) > 0:
             class_tensor = results[0].boxes.cls
             class_id = class_tensor[0].item()
-            class_name = self.model.names[class_id]
-            print(f"Detected: {class_name}", end='\r')
+            current_class_name = self.model.names[class_id]
 
-        return annotated_frame, class_name
+        # Filtering logic to prevent rapid jumps
+        if current_class_name == self.previous_class_name:
+            self.stable_frame_count += 1
+        else:
+            self.stable_frame_count = 0
+
+        if self.stable_frame_count >= self.required_stable_frames:
+            detected_class_name = current_class_name
+        else:
+            detected_class_name = self.previous_class_name
+
+        # Update previous class name
+        self.previous_class_name = detected_class_name
+
+        if detected_class_name is not None:
+            print(f"Detected: {detected_class_name}", end='\r')
+
+        return annotated_frame, detected_class_name
 
     def start_tracking(self):
         try:
             if self.test_mode:
                 # Read the test image
-                frame = cv2.imread("test.jpg")
+                frame = cv2.imread("test2.jpg")
                 if frame is None:
                     print("Error: test.jpg not found.", end='\r')
                     return

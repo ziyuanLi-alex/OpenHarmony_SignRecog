@@ -41,7 +41,37 @@ def get_recognized_class():
         response = {"message": "No class has been recognized yet"}
     else:
         response = {"class_name": latest_class_name}
-    return response, 200
+    
+    html_response = f"""
+    <html>
+        <head>
+            
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                }}
+                pre {{
+                    font-size: 100px;
+                    background-color: #f5f5f5;
+                    padding: 20px;
+                    border-radius: 5px;
+                }}
+            </style>
+        </head>
+        <body>
+            <h1>Latest Recognized Class</h1>
+            <pre>{latest_class_name}</pre>
+        </body>
+    </html>
+    """
+
+    return html_response, 200
+    # return response, 200
 
 if __name__ == "__main__":
     def run_server():
@@ -51,6 +81,6 @@ if __name__ == "__main__":
     server_thread.daemon = True
     server_thread.start()
 
-    tracker = YOLOTracker("runs/detect/train/weights/best.pt", test_mode=True)
+    tracker = YOLOTracker("runs/detect/train_6/weights/model.pt", test_mode=True)
     tracker.start_tracking()
     
