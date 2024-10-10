@@ -31,33 +31,33 @@ class YOLOTracker:
 
         # Visualize the results on the frame
         annotated_frame = results[0].plot()
-        current_class_name = None
+        detected_class_name = None
 
         # If any object is detected, extract the class name
         if len(results[0].boxes) > 0:
             class_tensor = results[0].boxes.cls
             class_id = class_tensor[0].item()
-            current_class_name = self.model.names[class_id]
+            detected_class_name = self.model.names[class_id]
 
         # Filtering logic to prevent rapid jumps
-        if current_class_name == self.previous_class_name:
+        if detected_class_name == self.previous_class_name:
             self.stable_frame_count += 1
         else:
             self.stable_frame_count = 0
 
         if self.stable_frame_count >= self.required_stable_frames:
-            detected_class_name = current_class_name
+            filtered_class_name = detected_class_name
         else:
-            detected_class_name = self.previous_class_name
+            filtered_class_name = self.previous_class_name
 
         # Update previous class name
         self.previous_class_name = detected_class_name
 
-        if detected_class_name is not None:
-            print(f"Detected: {detected_class_name}", end='\r')
+        if filtered_class_name is not None:
+            print(f"Detected: {filtered_class_name}", end='\r')
 
         self.latest_frame = annotated_frame
-        return annotated_frame, detected_class_name
+        return annotated_frame, filtered_class_name
 
     def start_tracking(self):
         try:
@@ -132,5 +132,5 @@ class YOLOTracker:
 # Example usage
 if __name__ == "__main__":
     # test_mode = "--test" in sys.argv
-    tracker = YOLOTracker("runs/detect/train1/weights/best.pt", test_mode=True)
+    tracker = YOLOTracker("runs/detect/train1/weights/best.pt", test_mode=False)
     tracker.start_tracking()
