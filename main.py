@@ -10,8 +10,8 @@ from flask_socketio import SocketIO, emit
 from predict import YOLOTracker
 import logging
 
-# TEST_MODE = False
-TEST_MODE = True
+TEST_MODE = False
+# TEST_MODE = True
 
 # Suppress Flask's default request logging
 if not TEST_MODE:
@@ -50,10 +50,14 @@ def recognize():
 
 @app.route('/recognized_class', methods=['GET'])
 def get_recognized_class():
+
+    # latest_class_name = 'O'
+
     if latest_class_name is None:
         response = {"message": "No class has been recognized yet"}
     else:
         response = {"class_name": latest_class_name}
+    
     
     html_response = f"""
     <html>
@@ -89,7 +93,8 @@ if __name__ == "__main__":
     server_thread.daemon = True
     server_thread.start()
 
-    # tracker = YOLOTracker("runs/detect/train_6/weights/model.pt", test_mode=False)
-    tracker = YOLOTracker("runs/detect/train_l/weights/best.pt", test_mode=TEST_MODE)
+    tracker = YOLOTracker("runs/detect/train_6/weights/model.pt", test_mode=False)
+    # tracker = YOLOTracker("runs/detect/train_l/weights/best.pt", test_mode=TEST_MODE)
+    # tracker = YOLOTracker("yolo11l.pt", test_mode=TEST_MODE)
     tracker.start_tracking()
     
