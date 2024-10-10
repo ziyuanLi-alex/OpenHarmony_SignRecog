@@ -10,6 +10,7 @@ class YOLOTracker:
         self.test_mode = test_mode
         self.test_post = test_post
         self.video_source = video_source
+        self.latest_frame = None
 
         if not self.test_mode:
             # Open the video file or stream (use 0 for default webcam)
@@ -22,7 +23,7 @@ class YOLOTracker:
         # Parameters for filtering
         self.previous_class_name = None
         self.stable_frame_count = 0
-        self.required_stable_frames = 5  # Number of frames the detection needs to be stable
+        self.required_stable_frames = 3  # Number of frames the detection needs to be stable
 
     def process_frame(self, frame):
         # Run YOLO tracking on the frame
@@ -55,6 +56,7 @@ class YOLOTracker:
         if detected_class_name is not None:
             print(f"Detected: {detected_class_name}", end='\r')
 
+        self.latest_frame = annotated_frame
         return annotated_frame, detected_class_name
 
     def start_tracking(self):
@@ -123,6 +125,9 @@ class YOLOTracker:
                 
     def broadcast_class_name(self, class_name):
         socketio.emit('recognized_class', {'class_name': class_name}, broadcast=True)
+
+    def get_latest_frame(self):
+        return self.latest_frame
 
 # Example usage
 if __name__ == "__main__":

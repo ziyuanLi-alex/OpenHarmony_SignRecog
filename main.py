@@ -5,7 +5,7 @@ import requests
 import threading
 import time
 import json
-from flask import Flask, request
+from flask import Flask, request, Response
 from flask_socketio import SocketIO, emit
 from predict import YOLOTracker
 import logging
@@ -22,6 +22,18 @@ if not TEST_MODE:
 app= Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+latest_class_name = None
+
+def generate_mjpg_stream(tracker):
+    while True:
+        frame = tracker.get_latest_frame()
+        if frame is not None:
+            ret, jpeg = cv2.imencode('.jpg', frame)
+            if ret:
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+            time.sleep(1 / 30)
+
 @app.route('/recognize', methods=['POST'])
 def recognize():
     global latest_class_name
@@ -31,7 +43,7 @@ def recognize():
 
     class_name = data['class_name']
     latest_class_name = class_name
-    # print(f"Received recognized class: {class_name}", end="\r", flush=True)
+    print(f"Received recognized class: {class_name}", end="\r", flush=True)
 
     return {"message": f"Class '{class_name}' recognized successfully"}, 200
 
@@ -47,14 +59,6 @@ def get_recognized_class():
         <head>
             
             <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100vh;
-                    margin: 0;
-                }}
                 pre {{
                     font-size: 100px;
                     background-color: #f5f5f5;
@@ -64,7 +68,6 @@ def get_recognized_class():
             </style>
         </head>
         <body>
-            <h1>Latest Recognized Class</h1>
             <pre>{latest_class_name}</pre>
         </body>
     </html>
@@ -72,6 +75,10 @@ def get_recognized_class():
 
     return html_response, 200
     # return response, 200
+
+@app.route('/mjpg_stream', methods=['GET'])
+def mjpg_stream():
+    return Response(generate_mjpg_stream(tracker), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
     def run_server():
@@ -81,6 +88,6 @@ if __name__ == "__main__":
     server_thread.daemon = True
     server_thread.start()
 
-    tracker = YOLOTracker("runs/detect/train_6/weights/model.pt", test_mode=True)
+    tracker = YOLOTracker("runs/detect/train_6/weights/model.pt", test_mode=False)
     tracker.start_tracking()
     
