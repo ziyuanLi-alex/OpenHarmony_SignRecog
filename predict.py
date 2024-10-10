@@ -27,7 +27,7 @@ class YOLOTracker:
 
     def process_frame(self, frame):
         # Run YOLO tracking on the frame
-        results = self.model.track(frame, persist=True, verbose=False)
+        results = self.model.track(frame, persist=True, verbose=True)
 
         # Visualize the results on the frame
         annotated_frame = results[0].plot()

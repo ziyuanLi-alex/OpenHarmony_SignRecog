@@ -10,6 +10,7 @@ from flask_socketio import SocketIO, emit
 from predict import YOLOTracker
 import logging
 
+# TEST_MODE = False
 TEST_MODE = True
 
 # Suppress Flask's default request logging
@@ -88,6 +89,7 @@ if __name__ == "__main__":
     server_thread.daemon = True
     server_thread.start()
 
-    tracker = YOLOTracker("runs/detect/train_6/weights/model.pt", test_mode=False)
+    # tracker = YOLOTracker("runs/detect/train_6/weights/model.pt", test_mode=False)
+    tracker = YOLOTracker("runs/detect/train_l/weights/best.pt", test_mode=TEST_MODE)
     tracker.start_tracking()
     
