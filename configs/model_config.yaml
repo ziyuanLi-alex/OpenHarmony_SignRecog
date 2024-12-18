@@ -1,0 +1,21 @@
+# 模型配置
+model_path: 'yolo11m.pt'
+data_yaml: './dataset/data.yaml'
+
+# 训练参数
+training:
+  epochs: 80
+  imgsz: 640
+  patience: 15
+  batch_size: 16
+  save_period: 10
+  workers: 4
+
+# 设备选择
+device: 'cuda'  # 'cuda' or 'cpu'
+
+# 验证参数
+validation:
+  conf_thres: 0.25
+  iou_thres: 0.45
+  max_det: 300

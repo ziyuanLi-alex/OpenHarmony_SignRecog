@@ -1,0 +1,28 @@
+# 服务器配置
+server:
+  url: 'http://localhost:5000'
+  host: '0.0.0.0'
+  port: 5000
+
+# 跟踪器配置
+tracker:
+  required_stable_frames: 3
+  mjpg_quality: 95
+  display_window: true
+
+# 摄像头设置
+camera:
+  source: 0  # 0 表示默认摄像头
+  settings:
+    CAP_PROP_FRAME_WIDTH: 640
+    CAP_PROP_FRAME_HEIGHT: 480
+    CAP_PROP_FPS: 30
+    CAP_PROP_BRIGHTNESS: 100
+    CAP_PROP_CONTRAST: 100
+    CAP_PROP_SATURATION: 100
+
+# 日志配置
+logging:
+  level: 'INFO'
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  file: 'logs/tracker.log'

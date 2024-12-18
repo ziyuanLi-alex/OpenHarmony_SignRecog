@@ -2,3 +2,4 @@ test.jpg
 dataset/
 yolo11n.pt
 __pycache__/
+.idea/*
