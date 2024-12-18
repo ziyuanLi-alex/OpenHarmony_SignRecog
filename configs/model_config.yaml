@@ -1,5 +1,6 @@
 # 模型配置
-model_path: 'yolo11m.pt'
+# model_path: 'yolo11m.pt'
+model_path: 'runs/detect/train_l/weights/best.pt'
 data_yaml: './dataset/data.yaml'
 
 # 训练参数
