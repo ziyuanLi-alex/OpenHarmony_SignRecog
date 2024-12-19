@@ -83,10 +83,6 @@ class HawkDepth(object):
 
         global  fx, fy, cx ,cy
 
-
-
-
-
         #获取的是1280 * 800的相机内参，若是需要640的，可以除以2.
         #下列代码获取的是未配准的深度相机的内参，若深度图配准后，相机内参应该使用彩色相机内参 intrinsicParams.colorIntrinsicParams
         intrinsicParams = BerxelHawkDeviceIntrinsicParams()
