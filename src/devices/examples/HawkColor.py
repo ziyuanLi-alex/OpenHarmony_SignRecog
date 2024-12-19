@@ -11,10 +11,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from berxel.BerxelHawkContext import *
-from berxel.BerxelHawkDevice import *
-from berxel.BerxelHawkFrame import *
-from berxel.BerxelHawkDefines import *
+from BerxelSdkDriver.BerxelHawkContext import *
+from BerxelSdkDriver.BerxelHawkDevice import *
+from BerxelSdkDriver.BerxelHawkFrame import *
+from BerxelSdkDriver.BerxelHawkDefines import *
 
 
 class HawkColor(object):

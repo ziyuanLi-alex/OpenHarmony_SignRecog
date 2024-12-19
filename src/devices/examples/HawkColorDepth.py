@@ -4,15 +4,13 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-sys.path.append('../BerxelSdkDriver/')
+sys.path.append('../')
 
 
 from BerxelSdkDriver.BerxelHawkDefines import *
 from BerxelSdkDriver.BerxelHawkFrame import *
 from BerxelSdkDriver.BerxelHawkDevice import *
 from BerxelSdkDriver.BerxelHawkContext import *
-
-
 
 
 import time
