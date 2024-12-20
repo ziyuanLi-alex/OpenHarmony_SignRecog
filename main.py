@@ -3,6 +3,7 @@ from src.web.server import create_app
 from src.web.routes import register_routes
 from src.core.yolo_tracker import YOLOTracker
 from src.utils.helpers import load_config
+from src.core.BerxelTracker import BerxelTracker
 
 
 def main():
@@ -13,9 +14,13 @@ def main():
     app, socketio = create_app()
 
     # 初始化追踪器
-    tracker = YOLOTracker(
-        model_path=config['model_path'],
-        config_path='configs/tracker_config.yaml'
+    # tracker = YOLOTracker(
+    #     model_path=config['model_path'],
+    #     config_path='configs/tracker_config.yaml'
+    # )
+    tracker = BerxelTracker(
+        model_path="runs/detect/train8/weights/best.pt",
+        config_path="configs/tracker_config.yaml"
     )
 
     # 注册路由

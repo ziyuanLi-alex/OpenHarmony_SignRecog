@@ -115,7 +115,6 @@ class DataCollector:
             colorFrameBuffer = hawkColorFrame.getDataAsUint8()
             color_array = np.ndarray(shape=(colorHeight, colorWidth, 3),
                                      dtype=np.uint8, buffer=colorFrameBuffer)
-            color_array = cv2.cvtColor(color_array, cv2.COLOR_BGR2RGB)
 
             return color_array, depth_array
         finally:
