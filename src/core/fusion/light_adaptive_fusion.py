@@ -20,6 +20,9 @@ class LightAdaptiveFusion:
         
         :return: Fused feature tensor
         """
+        device = rgb_features.device
+        weights = self._simplified_quality_estimation(...).to(device)
+
         # Perform quality estimation to determine how much trust to put into each modality
         if self.use_simplified_quality_estimation:
             weights = self._simplified_quality_estimation(rgb_features, depth_features, temporal_features)
@@ -49,7 +52,8 @@ class LightAdaptiveFusion:
         # This is a simplified approach.
         
         # Example: Equal weight for all modalities (you can customize this based on your use case)
-        return torch.tensor([0.5, 0.33, 0.17])
+        return torch.tensor([0.5, 0.33, 0.17]).clamp(0, 1) / \
+       torch.tensor([0.5, 0.33, 0.17]).sum()
 
     def _complex_quality_estimation(self, rgb_features, depth_features, temporal_features):
         """

@@ -3,3 +3,7 @@ dataset/
 yolo11n.pt
 __pycache__/
 .idea/*
+src/core/runs/detect/*
+runs/detect/*
+
+configs/yolo11m.pt
