@@ -1,6 +1,5 @@
 from ultralytics import YOLO
 from src.core.temporal_buffer import TemporalBuffer
-from src.core.fusion.light_adaptive_fusion import LightAdaptiveFusion
 from src.utils.performance_monitor import PerformanceMonitor
 import torch
 

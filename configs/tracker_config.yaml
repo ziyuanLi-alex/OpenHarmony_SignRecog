@@ -9,6 +9,12 @@ tracker:
   required_stable_frames: 3
   mjpg_quality: 95
   display_window: true
+  confidence_threshold: 0.5
+  # 双模型特有配置
+  depth_model_path: 'runs/detect/depth_train7/weights/best.pt'
+  fusion_weights:
+    rgb: 0.8
+    depth: 0.2
 
 # 摄像头设置
 camera:

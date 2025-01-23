@@ -1,0 +1,17 @@
+model_path: yolo11l.pt
+data_yaml: configs/data_rgb.yaml
+training:
+  epochs: 40
+  imgsz: 640
+  patience: 15
+  batch_size: 8
+  save_period: 10
+  workers: 4
+device: cuda
+validation:
+  conf_thres: 0.25
+  iou_thres: 0.45
+  max_det: 300
+tracker_type: dual
+project: runs/detect
+name: train_rgb

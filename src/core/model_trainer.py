@@ -56,7 +56,7 @@ class ModelTrainer:
         default_config = {
             'model_path': 'yolo11m.pt',
             'data_yaml': './dataset/data.yaml',
-            'epochs': 80,
+            'epochs': 40,
             'imgsz': 640,
             'patience': 15,
             'batch_size': 8,
